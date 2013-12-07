@@ -1,9 +1,9 @@
 name = report
 
-$(name).pdf : $(name).tex intro.tex
+$(name).pdf : $(name).tex statement.tex overview.tex implementation.tex sample.tex conclusion.tex
 	pdflatex $(name) && \
 	#bibtex $(name) && \
-	#pdflatex $(name) && \
+	pdflatex $(name) && \
 	pdflatex $(name)
 
 clean :
