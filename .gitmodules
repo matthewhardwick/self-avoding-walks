@@ -1,0 +1,3 @@
+[submodule "heroku_app"]
+	path = heroku_app
+	url = git@bitbucket.org:suprjake/cs454-final-project.git
