@@ -1,0 +1,16 @@
+The delta function given in delta-algorithm.txt works for transitions from 
+states that have numbers for t, m, b, and c. It does not handle the 'start',
+'trivial', or 'reject' states.
+
+From the start state, there are four legal input symbols (others lead to the
+'reject' state), which are listed below. They transition to numbered states, 
+and from those onward, the delta algorithm may be used.
+(q=start, a=00000) => q'=0010 
+(q=start, a=00010) => q'=0120
+(q=start, a=01000) => q'=1112
+(q=start, a=01010) => q'=1220
+
+From the trivial state, there is a self-loop on trivial input (a=00000), and a 
+transition to the reject state on all other inputs.
+
+The reject state is dead.
