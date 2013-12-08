@@ -1,3 +1,6 @@
 [submodule "heroku_webapp"]
 	path = heroku_webapp
 	url = https://github.com/matthewhardwick/cs454-final-project-heroku
+[submodule "PADS"]
+	path = PADS
+	url = http://www.ics.uci.edu/~eppstein/PADS/.git
