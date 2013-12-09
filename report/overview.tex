@@ -90,15 +90,15 @@ Now consider the would-be next state $q'=\langle t', m', b', c' \rangle$. Calcul
 
 Once the possible next state $q'$ has been calculated, we need to check that the lattice could still contain a valid self-avoiding walk. Conditions that indicate a transition to the \emph{`dead'} state are enumerated in the order that we check them below.
 \begin{enumerate}
-\item Check for a ``branch''. Calculate the new degree for vertices of $q$, considering any degree added by the current input symbol. If any of these vertices, or any vertex of $q'$, has degree higher than 2, then transition to the \emph{`dead'} state.
-\item Check for a ``horizontal jump''. Given input $a=a_0a_1a_2a_3a_4$, if $a_0 = a_2 = a_4 = 0$, but at least one of $a_1$ and $a_3$ is 1, then transition to the \emph{`dead'} state.
-\item At any point while processing a valid input lattice (if we have not yet reached the \emph{`done'} state), there will be a single degree-1 vertex (an ``end'') that is connected to the origin. The ``vertical jump'' case is characterized by an input that renders this running path unreachable. To check for this, we consider three separate cases:
+\item Check for a \emph{branch}. Calculate the new degree for vertices of $q$, considering any degree added by the current input symbol. If any of these vertices, or any vertex of $q'$, has degree higher than 2, then transition to the \emph{`dead'} state.
+\item Check for a \emph{horizontal jump}. Given input $a=a_0a_1a_2a_3a_4$, if $a_0 = a_2 = a_4 = 0$, but at least one of $a_1$ and $a_3$ is 1, then transition to the \emph{`dead'} state.
+\item At any point while processing a valid input lattice (if we have not yet reached the \emph{`done'} state), there will be a single degree-1 vertex (an ``end'') that is connected to the origin. The \emph{vertical jump} case is characterized by an input that renders this running path unreachable. To check for this, we consider three separate cases:
 \begin{itemize}
 \item If $q$ is single-ended, then check that its degree-1 vertex connects to the input symbol. If it does not, then transition to the \emph{`dead'} state. 
 \item If $q$ is double-ended, then check that \emph{both} of the ``ends'' of $q$ are connected to the input symbol. If this is not the case, then transition to the \emph{`dead'} state.
 \item If $q$ is triple-ended, ensure that if a vertex of $q$ is not connected to the input symbol, that it is \emph{not} the vertex connected to the origin. If the vertex connected to the origin is not connected to the input symbol, then transition to the \emph{`dead'} state.
 \end{itemize}
-\item Check for a closed loop. If $q$ is a triple-ended state and bits of the input connect two vertices that are marked (by $c$) as already connected, transition to the \emph{`dead'} state.
+\item Check for a \emph{closed loop}. If $q$ is a triple-ended state and bits of the input connect two vertices that are marked (by $c$) as already connected, transition to the \emph{`dead'} state.
 \end{enumerate}
 
 At this point, we know the input lattice could represent a valid self-avoiding walk. Therefore, if $q'\in Q$ then we transition to $q'$. If $q'\notin Q$, then it must be the case that we have finished processing the walk (if not the entire lattice) because the rejection conditions have not been met, but there is no available vertex to connect to; from this point, we should see only trivial input so we transition to the \emph{`done'} state.

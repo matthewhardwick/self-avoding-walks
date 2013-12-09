@@ -8,9 +8,9 @@ This finite automata accepts $3\times n$ square lattices that meet the following
 \begin{enumerate}
 \item The edges of the lattice represent a self-avoiding walk.
 \begin{enumerate}
-\item Walks in the lattice do not ``jump''; that is, there are exactly two ends, or vertices of degree 1.
-\item Walks in the lattice do not ``branch''; that is, no vertex has degree greater than 2.
-\item There are no closed loops in the lattice.
+\item Walks in the lattice do not \emph{jump}. That is, there are exactly two ends, or vertices of degree 1.
+\item Walks in the lattice do not \emph{branch}. That is, no vertex has degree greater than 2.
+\item There is no \emph{closed loop} in the lattice.
 \end{enumerate}
-\item A walk begins at the ``origin'' (the leftmost, bottom point) of the lattice. This condition not only simplifies the design of the automaton, but also ensures that if the automaton is used to count self-avoiding walks, double-counting the horizontal translations or vertical reflections of the same walk is avoided.
+\item A walk begins at the origin (the leftmost, bottom point) of the lattice. This condition not only simplifies the design of the automaton, but also ensures that if the automaton is used to count self-avoiding walks, double-counting the horizontal translations or vertical reflections of the same walk is avoided.
 \end{enumerate}
