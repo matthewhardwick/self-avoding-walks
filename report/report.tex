@@ -1,7 +1,7 @@
 % !TEX TS-program = pdflatex
 % !TEX encoding = UTF-8 Unicode
 
-\documentclass[12pt]{article} % use larger type; default would be 10pt
+\documentclass[11pt]{article} % use larger type; default would be 10pt
 
 \usepackage[margin=1in]{geometry} % fix margins
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
@@ -28,6 +28,13 @@
 \usepackage{amsmath, amssymb}
 \usepackage{tikz}
 
+\lstset{%language=Python,
+	basicstyle=\ttfamily\footnotesize,
+	frame=single,
+	numbers=left,
+	numberstyle=\tiny,
+	xleftmargin=2em
+}
 %%% HEADERS & FOOTERS
 \usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
 \pagestyle{fancy} % options: empty , plain , fancy
