@@ -64,20 +64,13 @@ def delta(current_state, symbol):
     if next_state == '111':
         if current_state in TRIPLE_ENDED:  # Triple -> triple.
             next_state += current_state[3]
-        elif current_state in SINGLE_ENDED:  # Single -> triple.
-            if current_state == '1000':  # Top
+        if current_state in SINGLE_ENDED:  # Single -> triple.
+            if current_state in ['1000', '1200']:  # Top
                 next_state += '1'
-            elif current_state == '0010':  # Bottom
+            if current_state in ['0010', '0210']:  # Bottom
                 next_state += '2'
     else:
         next_state += '0'
-
-    #print(next_state)
-
-    # Replace this with double-closing handing... return done
-    #if next_state not in STATE_LIST:
-    #    #print('not in state list')
-    #    return 'dead'
 
     if ('3' in next_state[0:3] or
         int(current_state[0]) + int(symbol[0]) > 2 or
@@ -87,11 +80,22 @@ def delta(current_state, symbol):
         return 'dead'
 
     if (symbol[0] == '0' and symbol[2] == '0' and symbol[4] == '0' and
-        (symbol[1] == '1' or symbol[3] == '1') or
-        int(current_state[0]) + int(symbol[0]) == 1 or
+        (symbol[1] == '1' or symbol[3] == '1')):  # Jump: horizontal.
+        #print('horizontal jump')
+        return 'dead'
+
+    if (current_state in SINGLE_ENDED and
+        (current_state[0] == '1' and symbol[0] == '0' or
+        current_state[1] == '1' and symbol[2] == '0' or
+        current_state[2] == '1' and symbol[4] == '0')):  # Jump: walk end.
+        #print('Jump: walk end')
+        return 'dead'
+
+    if (current_state in DOUBLE_ENDED and
+        (int(current_state[0]) + int(symbol[0]) == 1 or
         int(current_state[1]) + int(symbol[2]) == 1 or
-        int(current_state[2]) + int(symbol[4]) == 1):  # Jump.
-        #print('jump')
+        int(current_state[2]) + int(symbol[4]) == 1)):  # Double -> jump.
+        #print('double -> jump')
         return 'dead'
 
     if (current_state[3] == '1' and symbol[2:5] == '111' or 
