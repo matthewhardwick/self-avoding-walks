@@ -64,12 +64,16 @@ def delta(current_state, symbol):
     if next_state == '111':
         if current_state in TRIPLE_ENDED:  # Triple -> triple.
             next_state += current_state[3]
-        if current_state in SINGLE_ENDED:  # Single -> triple.
-            if current_state in ['1000', '1200']:  # Top
+        elif current_state in SINGLE_ENDED:  # Single -> triple.
+            if current_state in ['1000', '1200']:  # Top.
                 next_state += '1'
-            if current_state in ['0010', '0210']:  # Bottom
+            elif current_state in ['0010', '0210']:  # Bottom.
                 next_state += '2'
-    else:
+            else:  # Invalid.
+                next_state += '0'
+        else:  # Invalid.
+            next_state += '0'
+    else:  # Not a triple-ended state.
         next_state += '0'
 
     if ('3' in next_state[0:3] or
