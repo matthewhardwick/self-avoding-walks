@@ -25,7 +25,7 @@
 \usepackage{listings}
 \usepackage[hyphens]{url}
 \usepackage{hyperref}
-\usepackage{amsmath}
+\usepackage{amsmath, amssymb}
 
 %%% HEADERS & FOOTERS
 \usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
@@ -58,6 +58,9 @@
 \maketitle
 \tableofcontents
 
+\section{Introduction}
+\input{intro}
+
 \section{Problem Statement}
 \input{statement}
 
@@ -73,7 +76,7 @@
 \section{Summary and Conclusions}
 \input{conclusion}
 
-%\bibliographystyle{acm}
-%\bibliography{report}
+\bibliographystyle{acm}
+\bibliography{report}
 
 \end{document}
