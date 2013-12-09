@@ -1,8 +1,9 @@
 """
-This module contains the transition function and state lists for the DFA that finds
-Self-avoiding walks in a 3xN Lattice. It can be used on it's own but it's intention 
-is to be used with the PADS Library by David Eppstein as the transition function for
-the DFA Automata Library where the repository can be found here:
+This module contains the transition function and state lists for the DFA that 
+finds self-avoiding walks in a 3xN Lattice. It can be used on it's own but it's
+intention is to be used with the PADS Library by David Eppstein as the 
+transition function for the DFA Automata Library where the repository can be 
+found here:
 
     http://www.ics.uci.edu/~eppstein/PADS/.git 
     
@@ -16,9 +17,12 @@ An example, a working demo of this library can be found at the follow website:
     Repo: https://github.com/matthewhardwick/cs454-final-project-heroku
 
 Valid State Definitions:
-    Single Ended - Where one possible valid connection point exists in a given state.
-    Double Ended - Where two possible valid connection points exist in a given state.
-    Triple Ended - Where three possible valid connection points exist in a given state.
+    Single Ended - Where one possible valid connection point exists in a given 
+        state.
+    Double Ended - Where two possible valid connection points exist in a given 
+        state.
+    Triple Ended - Where three possible valid connection points exist in a 
+        given state.
 
     Each state is defined in a 4-char notation. 
 
@@ -27,10 +31,11 @@ Valid State Definitions:
     3rd Char - Bottom vertex
     4th Char - Closure state for a Triple ended state
 
-    Valid char set ['0', '1', '2'], where that number signifies the current degree of 
-    that positions vertex for the first three characters in the string. The fourth 
-    charater signifies a vertical connection for a triple ended state. If Middle-Bottom
-    then a 1 is used, else if a Top-Middle, then a 2 used. 
+    Valid char set ['0', '1', '2'], where that number signifies the current 
+    degree of that positions vertex for the first three characters in the 
+    string. The fourth charater signifies a vertical connection for a triple 
+    ended state. If Middle-Bottom then a 1 is used, else if a Top-Middle, then 
+    a 2 used. 
 
     Short hand notation for possible connection points in a given state:
         [T]op connection possible
@@ -66,21 +71,23 @@ def delta(current_state, symbol):
 
     Arguments:
     * current_state is a 4-char string over ['0', '1', '2']; a valid state.
-        The initial 3 symbols indicate the degree for possible connecting vertices.
-        The fourth symbol indicates the position for a triple ended connection vertical bar
-        where 1 indicates a M-B connection, and 2 indicates a T-M connection. 
+        The initial 3 symbols indicate the degree for possible connecting 
+        vertices. The fourth symbol indicates the position for a triple ended 
+        connection vertical bar where 1 indicates a M-B connection, and 2 
+        indicates a T-M connection. 
     * symbol is a 5-char string over ['0', '1'].
-        Each position of the string represents if an edge connects two vertices. 0 represents
-        a no connection, and 1 represents a connection.
+        Each position of the string represents if an edge connects two 
+        vertices. 0 represents no connection, and 1 represents a connection.
 
     Expected Output:
-        If a valid transition to a state exists, then the 4-char string representing that 
-            state will be returned, 'done' represents if that state transitions to an accepting
-            state. If the transition is no valid, then the state of 'dead' is returned, and the
-            entire input is not valid, and the input is rejected.
+        If a valid transition to a state exists, then the 4-char string 
+        representing that state will be returned, 'done' represents if that 
+        state transitions to an accepting state. If the transition is not 
+        valid, then the state of 'dead' is returned, and the entire input is 
+        not valid, and the input is rejected.
     """
 
-    # Handle valid transitions from the start state, or reject into the dead state
+    # Handle valid transitions from the start state, or return the dead state
     if current_state == 'start':
         if symbol == '00000':
             return '0010'  # Single: B
@@ -93,23 +100,24 @@ def delta(current_state, symbol):
         return 'dead'
 
 
-    # When already in the 'done' state, stay in that state if the symbol is trivial, or empty, 
-    # otherwise, reject and transition to the 'dead' state.
+    # When already in the 'done' state, stay in that state if the symbol is 
+    # trivial, or empty, otherwise, reject and transition to the 'dead' state.
     if current_state == 'done':
         if symbol == '00000':
             return 'done'
         else:
             return 'dead'
 
-    # When the current state is dead, or rejected, there is no possible way to recover, but
-    # it is possible to self loop on a dead state transition. 
+    # When the current state is dead, or rejected, there is no possible way to 
+    # recover, but it is possible to self loop on a dead state transition. 
     if current_state == 'dead':
         return 'dead'
 
     # Handle the initial trivial input, meaning if our symbol has no connections
     # and our current state is that we are in a single ended connection then we
-    # have a valid ending, and we can return 'done'. If we are in any other state
-    # then it is an invalid transition, and we must transition to the dead state. 
+    # have a valid ending, and we can return 'done'. If we are in any other 
+    # state then it is an invalid transition, and we must transition to the dead
+    # state. 
     if symbol == '00000': 
         if current_state in SINGLE_ENDED:
             return 'done'
@@ -121,8 +129,7 @@ def delta(current_state, symbol):
     t = sum(int(symbol[i]) for i in [0, 1])
     m = sum(int(symbol[i]) for i in [1, 2, 3])
     b = sum(int(symbol[i]) for i in [3, 4])
-    next_state = ''.join(str(i) for i in [t, m, b]) # Helper next state string for 
-                                                    # comparison.
+    next_state = ''.join(str(i) for i in [t, m, b]) # Helper next state string
 
     # Handle triple ended connection, and set the closure position if necessary.
     # Triples in general can only either connect to another triple, 
@@ -131,9 +138,9 @@ def delta(current_state, symbol):
         if current_state in TRIPLE_ENDED:  # Triple -> triple.
             next_state += current_state[3]
         elif current_state in SINGLE_ENDED:  # Single -> triple.
-            if current_state in ['1000', '1200', '1220']:  # Top sided closure.
+            if current_state in ['1000', '1200', '1220']:  # Bottom closure.
                 next_state += '1'
-            elif current_state in ['0010', '0210', '2210']:  # Bottom sided closure.
+            elif current_state in ['0010', '0210', '2210']:  # Top closure.
                 next_state += '2'
             else:  # Invalid.
                 next_state += '0'
@@ -142,8 +149,8 @@ def delta(current_state, symbol):
     else:  # Not a triple-ended state.
         next_state += '0'
 
-    # Handle Branch condition. If a vertex has a degree of 3 or higher, then that means
-    # it is being connected to by more than two edges, and is therefore rejected. 
+    # Handle Branch condition. If a vertex has a degree of 3 or higher, then 
+    # it is connected to by more than two edges, and is therefore rejected. 
     if ('3' in next_state[0:3] or
         int(current_state[0]) + int(symbol[0]) > 2 or
         int(current_state[1]) + int(symbol[2]) > 2 or
