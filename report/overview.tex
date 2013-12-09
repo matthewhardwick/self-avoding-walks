@@ -51,7 +51,7 @@ The finite automaton reads input symbols over the alphabet described in Section~
 \end{itemize}
 \end{itemize}
 
-In addition to the states that can be described in the manner outlined above, we will use three auxilliary states: \emph{`start'}, \emph{`done'}, and \emph{`dead'}. We present the complete list of required states in Table~\ref{tab:states}.
+In addition to the states that can be described in the manner outlined above, we will use three auxilliary states: \emph{`start'}, \emph{`done'}, and \emph{`dead'}. We present the complete state set $Q$ in Table~\ref{tab:states}.
 
 \begin{table}
 \begin{center}
@@ -78,4 +78,24 @@ Single-ended & Double-ended & Triple-ended & Auxilliary \\
 \subsection{Transition function}
 \label{sec:overview-delta}
 
+In this section, we present an overview of the algorithm behind the transition function $\delta$. For the implementation details, see Section~\ref{sec:implementation}.
 
+There are only a four valid inputs for the first input symbol (because only two edges represented actually appear on the lattice); furthermore, because we require that walks start at the origin, we must ensure that there is no more than one edge connected to that vertex. Therefore, we first handle the case that the input state is \emph{`start'} by handling each of the four inputs directly.
+
+At this point, we should decide where to transition on trivial input (i.e.\ the input is $a=00000$). From an accepting state (\emph{`done'} or any single-ended state), there should be a transition to the \emph{`done'} state; on trivial input from any non-accepting state, there should be a transition to the \emph{`dead'} state.
+
+The \emph{`dead'} state is just that: dead; so it has a self-loop on any input.
+
+Now consider the would-be next state $q'=\langle t', m', b', c' \rangle$. Calculating $t'$, $m'$, and $b'$ is straightforward, as these are only dependent on the input symbol. If these values indicate that the next state will \emph{not} be a triple-ended state, then we may set $c'=0$. If $t'=m'=b'=1$, then we could be in a triple-ended state, so we need to set $c'$ to 1 or 2 based on the criterion described in Section~\ref{sec:overview-state}. If $q$ is a triple-ended state, then the connectedness of $q'$ is the same as that of $q$, so $c'=c$ (this is because connectedness cannot switch between two triple-ended states without an intermediate single-ended state). If $q$ is a single-ended state, then the connectedness of $q'$ depends on which vertex corresponds to the original walk.
+
+Once the possible next state $q'$ has been calculated, we need to check that the lattice could still contain a valid self-avoiding walk. We check several conditions that, if satisfied, will result in a transition to a dead state. These are enumerated in the order that we check them below.
+\begin{enumerate}
+\item Check for a ``branch''. Calculate the new degree for vertices of $q$ \emph{including} current input. If any of these vertices or any vertex of $q'$ has degree higher than 2, transition to the \emph{`dead'} state.
+\item Check for a ``horizontal jump''. Given input $a=a_0a_1a_2a_3a_4$, if $a_0 = a_2 = a_4 = 0$, but at least one of $a_1$ and $a_3$ is 1, then transition to the \emph{`dead'} state.
+\item At any point while processing a valid input lattice (if we have not yet reached the \emph{`done'} state), there will be a single degree-1 vertex (an ``end'') that is connected to the origin. The ``vertical jump'' case is characterized by an input that renders this running path unreachable. To check for this, we consider three separate cases:
+\begin{itemize}
+\item If $q$ is single-ended, then check that its degree-1 vertex connects to the input symbol. If it does not, transition to the \emph{`dead'} state. 
+\item If $q$ is double-ended, then check that \emph{
+\item 
+\end{itemize}
+\end{enumerate}
