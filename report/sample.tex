@@ -1,6 +1,5 @@
-When creating test cases to check the validity of the delta function outlined in Section~\ref{sec:overview-delta} we broke down our test cases to exploit the different catagorys of failures on the latice.  Our first constraint of the walk was to begin at (0,0). It is  tested by the the value of the start state, if the walk could pass this it would move out to check for jumps, branches and closure properties. A jump on the latice can happen in one of two ways; horizontal or vertical. A branch has many sub-catagories depending on what is a valid input from the next, the idea is that whatever node the state is currently in can only transfer to one or the other but not both. Closure properties test for self-avoding walks, so we created test cases that would demonstrate the delta function knew how to proceed. Out of 60 ran cases below are 4 and how they were logically ran through the delta funtion. 
+When creating test cases to check the validity of the transition function outlined in Section~\ref{sec:overview-delta} we broke down our test cases to exploit the different types of failures on the lattice. Our first constraint of the walk was to begin at (0,0). It is tested by the value of the start state, if the walk could pass this it would move out to check for jumps, branches and closure properties. A jump on the lattice can happen in one of two ways: horizontal or vertical. A branch can happen in one of many ways depending on what is a valid input from the next, the idea is that whatever node the state is currently in can only transfer to one or the other but not both. Closure properties test for self-avoiding walks, so we created test cases that would demonstrate the delta function knew how to proceed. We ran over 50 test cases through the DFA. In the following paragraphs, we present 4 examples of these and discuss the sequence of states that leads to acceptance or not.
 
-Figure~\ref{fig:test-branch} demonstrates how the branch condition functions in rejecting an unvalid state. After the start state is processed, for this to be a valid walk it must proceed either from the top or bottom, not both. This is because of the condition that the walk must begin at point (0,0). Once the next input is read into the algorithm this would traverse to the dead state. This is because The branch function detected that this input it received has diverged away from a single path. Once the walk is in the dead state the rest immeditly becomes invalid.
 \begin{figure}[h!]
 \begin{center}
 \begin{tikzpicture}
@@ -14,11 +13,11 @@ Figure~\ref{fig:test-branch} demonstrates how the branch condition functions in 
 
 \end{tikzpicture}
 \end{center}
-\caption{Test case to illustrate branch recognition.}
+\caption{Test case to illustrate branch identification and rejection.}
 \label{fig:test-branch}
 \end{figure}
+The input in Figure~\ref{fig:test-branch} illustrates how a branch condition results in rejecting an invalid state. After the initial input is processed, for this to be a valid walk it must proceed from the top (walks must originate at the origin). After the next input is read this would transition to the dead state. Code to identify branches successfully detected that this input diverged into two paths. Once the DFA is in the dead state, we know the input is invalid.
 
-Figure~\ref{fig:mult-branch} further shows how the branch condition can detech a unvalid walk. When you receive the input state the only next valid state would be a single node along the bottom. We recvive that making the next valid walk a single node along the top. After the next one however it can easily perceivea branch because it has traversed from the bottom and the middle and not just the top as would have been allowed. This example demonstrates how going from a single node to an illegal triple node is detected.
 \begin{figure}[h!]
 \begin{center}
 \begin{tikzpicture}
@@ -35,11 +34,11 @@ Figure~\ref{fig:mult-branch} further shows how the branch condition can detech a
 
 \end{tikzpicture}
 \end{center}
-\caption{Test case to recognize multiple branches}
+\caption{Test case to illustrate multiple branch identification.}
 \label{fig:mult-branch} 
 \end{figure}
+The input in Figure~\ref{fig:mult-branch} demonstrates the branch identification capabilities of the DFA. It is clear that there has been a branch after the third input symbol because several of the resulting vertices have degree 3. It is possible to transition to a triple-ended state from a single-ended one, but this example is not a valid way.
 
-Figure~\ref{fig:double-ended} is to show how once you have traveled to a double-ended state that you must continue to be in any of these double states for the walk to be valid. When the first input is received after the start state is gets a middle bottom path, at this point for example if the algorithm received an input with C=1 (middle and bottom are connected) it would accept. The walk contiues along the double-ended state and eventualy receives the proper closure andis then accepted.
 \begin{figure}[h!]
 \begin{center}
 \begin{tikzpicture}
@@ -53,11 +52,11 @@ Figure~\ref{fig:double-ended} is to show how once you have traveled to a double-
 
 \end{tikzpicture}
 \end{center}
-\caption{Double-ended valid walk}
+\caption{Test case to illustrate double-ended state resulting in a valid walk.}
 \label{fig:double-ended}
 \end{figure}
+Execution of the DFA on the input presented in Figure~\ref{fig:double-ended} shows that once the DFA is in a double-ended state, it must remain in a double-ended state. The input continues in a double-ended state and is accepted upon being closed.
 
-Figure~\ref{fig:triple-ended} shows a triple-ended state, a valid input from triple-ended state must connect all the nodes to proceed.After the start stateis read, the first input is another triple-ended state and closes two of the paths. This is a valid and the last input we receive so this is a self-avoiding walk.
 \begin{figure}[h!]
 \begin{center}
 \begin{tikzpicture}
@@ -71,6 +70,7 @@ Figure~\ref{fig:triple-ended} shows a triple-ended state, a valid input from tri
 
 \end{tikzpicture}
 \end{center}
-\caption{Tripple-ended}
+\caption{Test case to illustrate triple-ended state behavior.}
 \label{fig:triple-ended}
 \end{figure}
+The input in Figure~\ref{fig:triple-ended} begins in a triple-ended state. The third input closes two of the paths (recall that valid input from triple-ended state must connect all the nodes to proceed). After the final nontrivial input, the DFA is in a single-ended, accepting state.
