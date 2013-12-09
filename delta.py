@@ -160,7 +160,7 @@ def delta(current_state, symbol):
         current_state[3] == '2' and symbol[0:3] == '111'):  # Closed loop.
         return 'dead'
 
-    if current_state in DOUBLE_ENDED and next_state not in STATE_LIST:
+    if next_state not in STATE_LIST:
         return 'done'
 
     return next_state
