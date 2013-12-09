@@ -1,4 +1,4 @@
-Ultimately, we will design a deterministic finite automaton (DFA) $M = \langle Q, \Sigma, \delta, q_0, F \rangle$, where $Q$ is the state set, $\Sigma$ is the input alphabet, $\delta : Q\times\Sigma \rightarrow Q$ is the transition function, $q_0$ is the initial state, and $F\subseteq Q$ is the set of final states.
+Ultimately, we will design a deterministic finite automaton (DFA) $M = \langle Q, \Sigma, \delta, q_0, F \rangle$, where $Q$ is the state set, $\Sigma$ is the input alphabet, $\delta : Q\times\Sigma \rightarrow Q$ is the transition function, $q_0$ is the initial state, and $F\subseteq Q$ is the set of final states. We begin by discussing our encoding of the lattice, follow that with a discussion of our concept of state, and conclude this section with an overview of the transition function $\delta$.
 
 \subsection{Encoding: the alphabet}
 \label{sec:overview-alphabet}
@@ -37,17 +37,17 @@ First, we define the alphabet $\Sigma$. A finite lattice is represented as a seq
 
 The finite automaton reads input symbols over the alphabet described in Section~\ref{sec:overview-alphabet}, and determines if they represent a valid self-avoiding walk as defined in Section~\ref{sec:statement}. A state in this automaton is represented by a 4-tuple $q = \langle t, m, b, c\rangle$:
 \begin{itemize}
-\item Elements $t$, $m$, and $b$ represent the degrees of the top, middle, and bottom (respectively) of the rightmost vertices of the input so far. (Notice that these values depend only on the most recent input symbol.) Because self-avoiding walks do not have branches, we are only interested in states for which $t, m, b \in \{0, 1, 2\}$. Provided the input is a valid walk, the number of ones among $t$, $m$, and $b$ represents the number of vertices that the next input symbol may connect to. We divide states by this characteristic:
+\item Elements $t$, $m$, and $b$ represent the degrees of the top, middle, and bottom (respectively) of the rightmost vertices of the input so far. (Notice that these values depend only on the most recent input symbol.) Because self-avoiding walks may not have branches, we are only interested in states for which $t, m, b \in \{0, 1, 2\}$. Provided the input is a valid walk, the number of ones among $t$, $m$, and $b$ represents the number of vertices that the next input symbol may connect to. We categorize states by this characteristic:
 \begin{itemize}
 \item If a state has a single 1-degree vertex, then we refer to it as \emph{single-ended}.
 \item If a state has exactly two 1-degree vertices, then we refer to it as \emph{double-ended}. Notice that if we are in a double-ended state, we must have already seen both ends of the valid walk (because one end is at the origin and to induce a second would otherwise require a branch, which is not allowed).
 \item If a state has three 1-degree vertices, then we refer to it as \emph{triple-ended}. For the purpose of identifying closed loops, we require an additional bit of state in the case of triple-ended states because two possible pairs of states may have already been connected; see the description of the $c$ element.
-\item If a state has no 1-degree vertices, then we have finished processing the walk and any further input should be trivial in order for the lattice to be valid.
+\item If a state has \emph{no} 1-degree vertices, then we have finished processing the walk and any further input should be trivial in order for the lattice to be valid.
 \end{itemize}
-\item Element $c$ represents closure information. If the state is single- or double-ended, then $c$ is not needed (so $c=0$ in those cases); if the state is triple-ended, $c$ will be either 1 or 2 depending on which pair of vertices is connected:
+\item Element $c$ represents closure information. If the state is single- or double-ended, then $c$ is not needed (so let $c=0$ in those cases); if the state is triple-ended, $c$ will be either 1 or 2 depending on which pair of vertices is connected:
 \begin{itemize}
-\item If the middle and bottom vertices are connected, then $c=1$.
-\item If the top and middle vertices are connected, then $c=2$.
+\item If the middle and bottom vertices are connected, then let $c=1$.
+\item If the top and middle vertices are connected, then let $c=2$.
 \end{itemize}
 \end{itemize}
 
@@ -59,19 +59,19 @@ In addition to the states that can be described in the manner outlined above, we
 \hline
 Single-ended & Double-ended & Triple-ended & Auxilliary \\
 \hline
-1000 & 1010 & 1111 & \emph{start} \\
-1200 & 1210 & 1112 & \emph{done} \\
-1220 & 1100 &  & \emph{dead} \\
-0100 & 1120 &  &  \\
-2100 & 0110 &  &  \\
-0120 & 2110 &  &  \\
-0010 &  &  &  \\
-0210 &  &  &  \\
-2210 &  &  &  \\
+\textbf{1000} & 1010 & 1111 & \emph{\textbf{start}} \\
+\textbf{1200} & 1210 & 1112 & \emph{\textbf{done}} \\
+\textbf{1220} & 1100 &  & \emph{dead} \\
+\textbf{0100} & 1120 &  &  \\
+\textbf{2100} & 0110 &  &  \\
+\textbf{0120} & 2110 &  &  \\
+\textbf{0010} &  &  &  \\
+\textbf{0210} &  &  &  \\
+\textbf{2210} &  &  &  \\
 \hline
 \end{tabular}
 \end{center}
-\caption{The state set $Q$, categorized by how many 1-degree vertices there are in the set of rightmost vertices. Final states include all the single-ended states, as well as the \emph{`start'} (accept walks of length 0), and \emph{`done'} states. (The delta function outlined in Section~\ref{sec:overview-delta} may be used to verify that every state listed here is reachable from the start state.)}
+\caption{The state set $Q$, categorized by how many 1-degree vertices there are in the set of rightmost vertices of the input so far. Final states are represented in bold, and include all the single-ended states as well as the \emph{`start'} (accept walks of length 0), and \emph{`done'} states. (The delta function outlined in Section~\ref{sec:overview-delta} may be used to verify that every state listed here is reachable from the start state.)}
 \label{tab:states}
 \end{table}
 
