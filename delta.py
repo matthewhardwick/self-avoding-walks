@@ -29,7 +29,7 @@ Valid State Definitions:
     1st Char - Top vertex
     2nd Char - Middle vertex
     3rd Char - Bottom vertex
-    4th Char - Closure state for a Triple ended state
+    4th Char - Closure state for a Triple-ended state
 
     Valid char set ['0', '1', '2'], where that number signifies the current 
     degree of that positions vertex for the first three characters in the 
@@ -72,7 +72,7 @@ def delta(current_state, symbol):
     Arguments:
     * current_state is a 4-char string over ['0', '1', '2']; a valid state.
         The initial 3 symbols indicate the degree for possible connecting 
-        vertices. The fourth symbol indicates the position for a triple ended 
+        vertices. The fourth symbol indicates the position for a triple-ended 
         connection vertical bar where 1 indicates a M-B connection, and 2 
         indicates a T-M connection. 
     * symbol is a 5-char string over ['0', '1'].
@@ -113,10 +113,10 @@ def delta(current_state, symbol):
     if current_state == 'dead':
         return 'dead'
 
-    # Handle the initial trivial input, meaning if our symbol has no connections
-    # and our current state is that we are in a single ended connection then we
+    # Handle initial trivial input, meaning if our symbol has no connections
+    # and our current state is that we are in a single-ended connection then we
     # have a valid ending, and we can return 'done'. If we are in any other 
-    # state then it is an invalid transition, and we must transition to the dead
+    # state then it is an invalid transition, and we transition to the dead
     # state. 
     if symbol == '00000': 
         if current_state in SINGLE_ENDED:
@@ -131,9 +131,9 @@ def delta(current_state, symbol):
     b = sum(int(symbol[i]) for i in [3, 4])
     next_state = ''.join(str(i) for i in [t, m, b]) # Helper next state string
 
-    # Handle triple ended connection, and set the closure position if necessary.
+    # Handle triple-ended connection, and set closure position if necessary.
     # Triples in general can only either connect to another triple, 
-    # or a single ended state, and will be rejected otherwise. 
+    # or a single-ended state, and will be rejected otherwise. 
     if next_state == '111':
         if current_state in TRIPLE_ENDED:  # Triple -> triple.
             next_state += current_state[3]
@@ -163,7 +163,7 @@ def delta(current_state, symbol):
         (symbol[1] == '1' or symbol[3] == '1')):
         return 'dead'
 
-    # Handles the vertical jump condition in a single ended state, where
+    # Handles the vertical jump condition in a single-ended state, where
     # a gap is created in a way such that a vertical separation is created 
     # between two vertices where only one connection is possible.
     # Additionally, this means we have left the walk which starts
@@ -175,7 +175,7 @@ def delta(current_state, symbol):
         current_state[2] == '1' and symbol[4] == '0')):
         return 'dead'
 
-    # Handles the vertical jump condition in a double ended state, where
+    # Handles the vertical jump condition in a double-ended state, where
     # a gap is created in such a way that a vertical separation is created 
     # between two vertices where two possible vertices have a connection point.
     # Additionally, this means we have left the walk which starts
@@ -187,7 +187,7 @@ def delta(current_state, symbol):
         int(current_state[2]) + int(symbol[4]) == 1)):
         return 'dead'
 
-    # Handles the vertical jump condition in a triple ended state, where
+    # Handles the vertical jump condition in a triple-ended state, where
     # a gap is created in such a way that a vertical separation exists
     # between vertices where three possible connection points exist. 
     # Additionally, this means we have left the walk which starts
