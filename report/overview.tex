@@ -1,5 +1,8 @@
 Ultimately, we will design a deterministic finite automaton (DFA) $M = \langle Q, \Sigma, \delta, q_0, F \rangle$, where $Q$ is the state set, $\Sigma$ is the input alphabet, $\delta : Q\times\Sigma \rightarrow Q$ is the transition function, $q_0$ is the initial state, and $F\subseteq Q$ is the set of final states.
 
+\subsection{Encoding: the alphabet}
+\label{sec:overview-alphabet}
+
 First, we define the alphabet $\Sigma$. A finite lattice is represented as a sequence of 5-bit binary strings as described in Figure~\ref{fig:encoding-symbol}. We encode the lattice left-to-right. Note that this means for the first (leftmost) symbol $a=a_0a_1a_2a_3a_4$, it must be the case that $a_0 = a_2 = a_4 = 0$, because edges that correspond to these three symbols do not appear on the lattice.
 
 \begin{figure}
@@ -29,7 +32,10 @@ First, we define the alphabet $\Sigma$. A finite lattice is represented as a seq
 \label{fig:encoding-symbol}
 \end{figure}
 
-The finite automaton reads input symbols over the alphabet described above, and determines if they represent a valid self-avoiding walk as defined in Section~\ref{sec:statement}. A state in this automaton is represented by a 4-tuple $q = \langle t, m, b, c\rangle$:
+\subsection{State}
+\label{sec:overview-state}
+
+The finite automaton reads input symbols over the alphabet described in Section~\ref{sec:overview-alphabet}, and determines if they represent a valid self-avoiding walk as defined in Section~\ref{sec:statement}. A state in this automaton is represented by a 4-tuple $q = \langle t, m, b, c\rangle$:
 \begin{itemize}
 \item Elements $t$, $m$, and $b$ represent the degrees of the top, middle, and bottom (respectively) of the rightmost vertices of the input so far. (Notice that these values depend only on the most recent input symbol.) Because self-avoiding walks do not have branches, we are only interested in states for which $t, m, b \in \{0, 1, 2\}$. Provided the input is a valid walk, the number of ones among $t$, $m$, and $b$ represents the number of vertices that the next input symbol may connect to. We divide states by this characteristic:
 \begin{itemize}
@@ -40,8 +46,8 @@ The finite automaton reads input symbols over the alphabet described above, and 
 \end{itemize}
 \item Element $c$ represents closure information. If the state is single- or double-ended, then $c$ is not needed (so $c=0$ in those cases); if the state is triple-ended, $c$ will be either 1 or 2 depending on which pair of vertices is connected:
 \begin{itemize}
-\item If the top and middle vertices are connected, then $c=2$.
 \item If the middle and bottom vertices are connected, then $c=1$.
+\item If the top and middle vertices are connected, then $c=2$.
 \end{itemize}
 \end{itemize}
 
@@ -65,6 +71,11 @@ Single-ended & Double-ended & Triple-ended & Auxilliary \\
 \hline
 \end{tabular}
 \end{center}
-\caption{All states of interest, categorized by how many 1-degree vertices there are in the set of rightmost vertices. Final states include all the single-ended states, as well as the \emph{`start'} (accept walks of length 0), and \emph{`done'} states.}
+\caption{The state set $Q$, categorized by how many 1-degree vertices there are in the set of rightmost vertices. Final states include all the single-ended states, as well as the \emph{`start'} (accept walks of length 0), and \emph{`done'} states. (The delta function outlined in Section~\ref{sec:overview-delta} may be used to verify that every state listed here is reachable from the start state.)}
 \label{tab:states}
 \end{table}
+
+\subsection{Transition function}
+\label{sec:overview-delta}
+
+
