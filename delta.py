@@ -26,7 +26,7 @@ STATE_LIST = SINGLE_ENDED + DOUBLE_ENDED + TRIPLE_ENDED + OTHER_STATES
 def delta(current_state, symbol):
     """Given a state and input symbol, find the next state.
 
-	Arguments:
+    Arguments:
     * current_state is a 4-char string over ['0', '1', '2']; a valid state.
     * symbol is a 5-char string over ['0', '1'].
     """
@@ -39,6 +39,7 @@ def delta(current_state, symbol):
             return '1112'  # Triple: T-M
         if symbol == '01010':
             return '1220'  # Single: T
+        return 'dead'
 
     if current_state == 'done':
         if symbol == '00000':
@@ -49,7 +50,7 @@ def delta(current_state, symbol):
     if current_state == 'dead':
         return 'dead'
 
-    if symbol == '00000':  # Handle trivial input.
+    if symbol == '00000':  # Handle trivial input (from non-'done' state).
         if current_state in SINGLE_ENDED:
             return 'done'
         else:
@@ -63,32 +64,42 @@ def delta(current_state, symbol):
     if next_state == '111':
         if current_state in TRIPLE_ENDED:  # Triple -> triple.
             next_state += current_state[3]
-        if current_state in SINGLE_ENDED:  # Triple -> single.
-            if current_state[0:3] == '100':  # Top
+        elif current_state in SINGLE_ENDED:  # Single -> triple.
+            if current_state == '1000':  # Top
                 next_state += '1'
-            if current_state[0:3] == '001':  # Bottom
+            elif current_state == '0010':  # Bottom
                 next_state += '2'
     else:
         next_state += '0'
 
-    if next_state not in STATE_LIST:
+    #print(next_state)
+
+    # Replace this with double-closing handing... return done
+    #if next_state not in STATE_LIST:
+    #    #print('not in state list')
+    #    return 'dead'
+
+    if ('3' in next_state[0:3] or
+        int(current_state[0]) + int(symbol[0]) > 2 or
+        int(current_state[1]) + int(symbol[2]) > 2 or
+        int(current_state[2]) + int(symbol[4]) > 2):  # Branch.
+        #print('branch')
         return 'dead'
 
-    if next_state[1] == '3' or 
-        current_state[0] + symbol[0] > 2 or
-        current_state[1] + symbol[2] > 2 or
-        current_state[2] + symbol[4] > 2:  # Branch.
-        return 'dead'
-
-    if symbol[0] == '0' and symbol[2] == '0' and symbol[4] == '0' and
+    if (symbol[0] == '0' and symbol[2] == '0' and symbol[4] == '0' and
         (symbol[1] == '1' or symbol[3] == '1') or
-        current_state[0] == '1' and symbol[0] == '0' or
-        current_state[1] == '1' and symbol[2] == '0' or
-        current_state[2] == '1' and symbol[4] == '0':  # Jump.
+        int(current_state[0]) + int(symbol[0]) == 1 or
+        int(current_state[1]) + int(symbol[2]) == 1 or
+        int(current_state[2]) + int(symbol[4]) == 1):  # Jump.
+        #print('jump')
         return 'dead'
 
-    if current_state[3] == '1' and symbol[2:5] == '111' or 
-        current_state[3] == '2' and symbol[0:3] == '111':  # Closed loop.
+    if (current_state[3] == '1' and symbol[2:5] == '111' or 
+        current_state[3] == '2' and symbol[0:3] == '111'):  # Closed loop.
+        #print('closed loop')
         return 'dead'
+
+    if current_state in DOUBLE_ENDED and next_state not in STATE_LIST:
+        return 'done'
 
     return next_state
