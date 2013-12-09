@@ -65,9 +65,9 @@ def delta(current_state, symbol):
         if current_state in TRIPLE_ENDED:  # Triple -> triple.
             next_state += current_state[3]
         elif current_state in SINGLE_ENDED:  # Single -> triple.
-            if current_state in ['1000', '1200']:  # Top.
+            if current_state in ['1000', '1200', '1220']:  # Top.
                 next_state += '1'
-            elif current_state in ['0010', '0210']:  # Bottom.
+            elif current_state in ['0010', '0210', '2210']:  # Bottom.
                 next_state += '2'
             else:  # Invalid.
                 next_state += '0'
@@ -88,7 +88,7 @@ def delta(current_state, symbol):
         #print('horizontal jump')
         return 'dead'
 
-    if (current_state in SINGLE_ENDED and
+    if (current_state in SINGLE_ENDED + TRIPLE_ENDED and
         (current_state[0] == '1' and symbol[0] == '0' or
         current_state[1] == '1' and symbol[2] == '0' or
         current_state[2] == '1' and symbol[4] == '0')):  # Jump: walk end.
