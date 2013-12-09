@@ -88,7 +88,7 @@ def delta(current_state, symbol):
         #print('horizontal jump')
         return 'dead'
 
-    if (current_state in SINGLE_ENDED + TRIPLE_ENDED and
+    if (current_state in SINGLE_ENDED and
         (current_state[0] == '1' and symbol[0] == '0' or
         current_state[1] == '1' and symbol[2] == '0' or
         current_state[2] == '1' and symbol[4] == '0')):  # Jump: walk end.
@@ -100,6 +100,13 @@ def delta(current_state, symbol):
         int(current_state[1]) + int(symbol[2]) == 1 or
         int(current_state[2]) + int(symbol[4]) == 1)):  # Double -> jump.
         #print('double -> jump')
+        return 'dead'
+
+    if (current_state in TRIPLE_ENDED and  # If the 'main' walk ends.
+        (current_state[3] == '1' and 
+        int(current_state[0]) + int(symbol[0]) == 1 or
+        current_state[3] == '2' and
+        int(current_state[2]) + int(symbol[4]) == 1)):
         return 'dead'
 
     if (current_state[3] == '1' and symbol[2:5] == '111' or 
