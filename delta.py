@@ -1,18 +1,44 @@
-"""This module contains the transition function and some state lists."""
-
 """
+This module contains the transition function and state lists for the DFA that finds
+Self-avoiding walks in a 3xN Lattice. It can be used on it's own but it's intention 
+is to be used with the PADS Library by David Eppstein as the transition function for
+the DFA Automata Library where the repository can be found here:
+
+    http://www.ics.uci.edu/~eppstein/PADS/.git 
+    
+This library is hosted, along with our report and sample inputs here:
+
+    https://github.com/matthewhardwick/self-avoding-walks
+    
+An example, a working demo of this library can be found at the follow website:
+
+    Demo: http://cs454-final-project.herokuapp.com/
+    Repo: https://github.com/matthewhardwick/cs454-final-project-heroku
+
 Valid State Definitions:
     Single Ended - Where one possible valid connection point exists in a given state.
     Double Ended - Where two possible valid connection points exist in a given state.
     Triple Ended - Where three possible valid connection points exist in a given state.
 
-    [T]op connection possible
-    [M]iddle connection possible
-    [B]ottom connection possible
-    
+    Each state is defined in a 4-char notation. 
+
+    1st Char - Top vertex
+    2nd Char - Middle vertex
+    3rd Char - Bottom vertex
+    4th Char - Closure state for a Triple ended state
+
     Valid char set ['0', '1', '2'], where that number signifies the current degree of 
-     
+    that positions vertex for the first three characters in the string. The fourth 
+    charater signifies a vertical connection for a triple ended state. If Middle-Bottom
+    then a 1 is used, else if a Top-Middle, then a 2 used. 
+
+    Short hand notation for possible connection points in a given state:
+        [T]op connection possible
+        [M]iddle connection possible
+        [B]ottom connection possible
 """
+
+
 SINGLE_ENDED = [
     '1000', '1200', '1220',  # T
     '0100', '2100', '0120',  # M
@@ -131,36 +157,56 @@ def delta(current_state, symbol):
         return 'dead'
 
     # Handles the vertical jump condition in a single ended state, where
-    # a gap is created in a way such that a vertical gap is created between
-    # two vertices where only one connection is possible, and is therefore rejected.
+    # a gap is created in a way such that a vertical separation is created 
+    # between two vertices where only one connection is possible.
+    # Additionally, this means we have left the walk which starts
+    # at the origin, which is a necessary requirement for this DFA.
+    # We in turn reject that input.
     if (current_state in SINGLE_ENDED and
         (current_state[0] == '1' and symbol[0] == '0' or
         current_state[1] == '1' and symbol[2] == '0' or
-        current_state[2] == '1' and symbol[4] == '0')):  # Jump: walk end.
+        current_state[2] == '1' and symbol[4] == '0')):
         return 'dead'
 
     # Handles the vertical jump condition in a double ended state, where
-    # a gap is created in such a way that a vertical gap is created between
-    # two vertices where two possible vertices have a connection point, and
-    # is therefore rejected.
+    # a gap is created in such a way that a vertical separation is created 
+    # between two vertices where two possible vertices have a connection point.
+    # Additionally, this means we have left the walk which starts
+    # at the origin, which is a necessary requirement for this DFA.
+    # We in turn reject that input.
     if (current_state in DOUBLE_ENDED and
         (int(current_state[0]) + int(symbol[0]) == 1 or
         int(current_state[1]) + int(symbol[2]) == 1 or
         int(current_state[2]) + int(symbol[4]) == 1)):
         return 'dead'
 
-    if (current_state in TRIPLE_ENDED and  # If the 'main' walk ends.
+    # Handles the vertical jump condition in a triple ended state, where
+    # a gap is created in such a way that a vertical separation exists
+    # between vertices where three possible connection points exist. 
+    # Additionally, this means we have left the walk which starts
+    # at the origin, which is a necessary requirement for this DFA.
+    # We in turn reject that input.
+    if (current_state in TRIPLE_ENDED and
         (current_state[3] == '1' and 
         int(current_state[0]) + int(symbol[0]) == 1 or
         current_state[3] == '2' and
         int(current_state[2]) + int(symbol[4]) == 1)):
         return 'dead'
 
+    # Handles the case in which a loop is created, and as the name of this
+    # project suggests must be avoided. Since, a loop is created, it
+    # is rejected.
     if (current_state[3] == '1' and symbol[2:5] == '111' or 
         current_state[3] == '2' and symbol[0:3] == '111'):  # Closed loop.
         return 'dead'
 
+    # If we have made it through all of our checks, and the next state is
+    # in fact in the state list then we either enter or loop on an accept
+    # state.
     if next_state not in STATE_LIST:
         return 'done'
 
+    # If we have made it through every other possible case, then that means
+    # we have a valid transition to another state, and can therefore move
+    # to that state and return that state.
     return next_state
