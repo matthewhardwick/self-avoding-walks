@@ -1,6 +1,6 @@
 name = report
 
-$(name).pdf : $(name).tex $(name).bib statement.tex overview.tex implementation.tex sample.tex conclusion.tex
+$(name).pdf : $(name).tex $(name).bib intro.tex statement.tex overview.tex implementation.tex sample.tex conclusion.tex
 	pdflatex $(name) && \
 	bibtex $(name) && \
 	pdflatex $(name) && \
